@@ -38,6 +38,10 @@ class Category(TimeStampedModel):
         unique=True,
     )
 
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+
     def __str__(self):
         return self.name
 
@@ -53,6 +57,10 @@ class Address(TimeStampedModel):
         blank=True,
         null=True,
     )
+
+    class Meta:
+        verbose_name = "Address"
+        verbose_name_plural = "Addresses"
 
     def __str__(self):
         return ("Line 1: %s, Line 2: %s, Landmark: %s,"
@@ -82,6 +90,10 @@ class Feedback(TimeStampedModel):
         related_name="post",
         on_delete=models.CASCADE
     )
+
+    class Meta:
+        verbose_name = "Feedback"
+        verbose_name_plural = "Feedbacks"
 
 
 class Post(TimeStampedModel):
@@ -117,3 +129,7 @@ class Post(TimeStampedModel):
         blank=True,
         null=True,
     )
+
+    class Meta:
+        verbose_name = "Post"
+        verbose_name_plural = "Posts"
