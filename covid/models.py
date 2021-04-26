@@ -36,6 +36,7 @@ class Category(TimeStampedModel):
         blank=True,
         null=False,
         unique=True,
+        primary_key=True
     )
 
     class Meta:
@@ -74,7 +75,7 @@ class Address(TimeStampedModel):
 
 class Feedback(TimeStampedModel):
     user = models.OneToOneField(
-        "users.Account",
+        "User",
         related_name="user_feedback",
         on_delete=models.CASCADE,
     )
@@ -98,9 +99,11 @@ class Feedback(TimeStampedModel):
 
 class Post(TimeStampedModel):
     user = models.OneToOneField(
-        "users.Account",
+        "User",
         related_name="user",
         on_delete=models.CASCADE,
+        blank=True,
+        null=True
     )
     category = models.ManyToManyField(
         "Category",
@@ -110,6 +113,8 @@ class Post(TimeStampedModel):
         "Address",
         related_name="address",
         on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
     message = models.TextField(
         blank=True,
@@ -133,3 +138,9 @@ class Post(TimeStampedModel):
     class Meta:
         verbose_name = "Post"
         verbose_name_plural = "Posts"
+
+
+class User(TimeStampedModel):
+    name = models.CharField(max_length=50, blank=True, null=True)
+    email = models.EmailField(max_length=255, blank=True, null=True)
+    mobile = models.CharField(max_length=15, blank=True, null=True)
