@@ -16,7 +16,7 @@ class PostViewSet(ViewSet, mixins.CreateModelMixin, mixins.UpdateModelMixin, mix
         MultiPartParser,
         JSONParser
     )
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().order_by("-like")
 
     def create(self, request, *args, **kwargs):
         
@@ -51,6 +51,24 @@ class PostViewSet(ViewSet, mixins.CreateModelMixin, mixins.UpdateModelMixin, mix
                 "response": True
             }
         )
+
+    @action(methods=['POST'], detail=False)
+    def search(self, request, pk=None):
+        state = request.data.get("state", None)
+        categories = request.data.get("categories", [])
+
+        post_objs = Post.objects.filter(
+            address__state__icontains=state,
+            category__in=categories
+        ).order_by("-like").distinct()
+
+        return response.Ok(
+            PostDetailSerializer(
+                post_objs,
+                many=True
+            ).data
+        )
+
 
     def get_serializer_class(self, *args, **kwargs):
         if self.action == "list":

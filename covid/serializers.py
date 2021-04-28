@@ -95,6 +95,30 @@ class PostCreateSerializer(serializers.ModelSerializer):
 class PostDetailSerializer(serializers.ModelSerializer):
     user = UserCreateSerializer(read_only=True)
     address = AddressCreateSerializer(read_only=True)
+    is_liked = serializers.SerializerMethodField()
+    is_disliked = serializers.SerializerMethodField()
+    is_reported = serializers.SerializerMethodField()
     class Meta:
         model = Post
-        fields = "__all__"
+        fields = (
+            "id",
+            "user",
+            "address",
+            "message",
+            "like",
+            "dislike",
+            "category",
+            "is_liked",
+            "is_disliked",
+            "is_reported",
+        )
+
+    def get_is_liked(self, obj):
+        return False
+
+    def get_is_disliked(self, obj):
+        return False
+
+    def get_is_reported(self, obj):
+        return False
+
