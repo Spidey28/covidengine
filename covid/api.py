@@ -7,7 +7,7 @@ from base import response
 from base.viewsets import GenericViewSet as ViewSet
 
 from .models import Post, Category
-from .serializers import PostCreateSerializer, CategorySerializer, PostDetailSerializer
+from .serializers import PostCreateSerializer, CategorySerializer, PostDetailSerializer, FeedbackCreateSerializer
 
 
 class PostViewSet(ViewSet, mixins.CreateModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin):
@@ -69,6 +69,21 @@ class PostViewSet(ViewSet, mixins.CreateModelMixin, mixins.UpdateModelMixin, mix
             ).data
         )
 
+    @action(methods=['POST'], detail=False)
+    def feedback(self, request, pk=None):
+        feedback_serializer = FeedbackCreateSerializer(
+            data=request.data
+        )
+
+        feedback_serializer.is_valid(raise_exception=True)
+        feedback_obj = feedback_serializer.save()
+
+        return response.Ok(
+            {
+                "id": feedback_obj.id,
+                "response": True
+            }
+        )
 
     def get_serializer_class(self, *args, **kwargs):
         if self.action == "list":

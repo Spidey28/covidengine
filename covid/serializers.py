@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from .models import Post, Category, User, Address
+from .models import Post, Category, User, Address, Feedback
 from .services import update_object
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
+    name = serializers.CharField(required=True)
     class Meta:
         model = User
         fields = (
@@ -111,6 +112,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
             "is_liked",
             "is_disliked",
             "is_reported",
+            "is_visible",
         )
 
     def get_is_liked(self, obj):
@@ -122,3 +124,26 @@ class PostDetailSerializer(serializers.ModelSerializer):
     def get_is_reported(self, obj):
         return False
 
+
+class FeedbackCreateSerializer(serializers.ModelSerializer):
+    user = UserCreateSerializer(required=True)
+
+    class Meta:
+        model = Feedback
+        fields = "__all__"
+
+
+    def create(self, validated_data):
+        user = validated_data.pop("user", {})
+
+        feedback_obj = Feedback.objects.create(**validated_data)
+
+        if user:
+            user_serializer = UserCreateSerializer(data=user)
+            user_serializer.is_valid(raise_exception=True)
+            user_obj = user_serializer.save()
+            feedback_obj.user = user_obj
+
+        feedback_obj.save()
+
+        return feedback_obj

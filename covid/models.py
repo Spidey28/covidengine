@@ -78,6 +78,8 @@ class Feedback(TimeStampedModel):
         "User",
         related_name="user_feedback",
         on_delete=models.CASCADE,
+        blank=True,
+        null=True
     )
     message = models.TextField(
         blank=True,
@@ -89,7 +91,9 @@ class Feedback(TimeStampedModel):
     post = models.ForeignKey(
         "Post",
         related_name="post",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
     )
 
     class Meta:
@@ -133,6 +137,9 @@ class Post(TimeStampedModel):
     dislike = models.PositiveIntegerField(
         blank=True,
         null=True,
+    )
+    is_visible = models.BooleanField(
+        default=True
     )
 
     class Meta:
